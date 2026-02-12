@@ -221,9 +221,9 @@
             <form method="post" enctype="multipart/form-data">
                 {% csrf_token %}
                 <div class="file-input-wrapper">
-                    <input type="file" name="file" id="file-input" accept=".xlsx,.xls,.txt" required onchange="updateFileName()">
+                    <input type="file" name="file" id="file-input" accept=".xlsx,.xls,.csv,.txt" multiple required onchange="updateFileName()">
                     <label for="file-input" class="file-input-label">
-                        📤 Choose File to Upload (Excel or TXT only)
+                        📤 Choose Files to Upload (Excel, CSV or TXT - Max 4 files)
                     </label>
                     <div class="selected-file-name" id="selected-file-name"></div>
                 </div>
@@ -243,6 +243,8 @@
                                     <img src="{{ file.file.url }}" alt="{{ file.file_name }}">
                                 {% elif file.file_type == '.xlsx' or file.file_type == '.xls' %}
                                     <div class="file-icon" style="color: #217346;">📊</div>
+                                {% elif file.file_type == '.csv' %}
+                                    <div class="file-icon" style="color: #0d8c3a;">📋</div>
                                 {% elif file.file_type == '.txt' %}
                                     <div class="file-icon" style="color: #666;">📝</div>
                                 {% else %}
@@ -269,8 +271,16 @@
         function updateFileName() {
             const input = document.getElementById('file-input');
             const nameDisplay = document.getElementById('selected-file-name');
-            if (input.files && input.files[0]) {
-                nameDisplay.textContent = '✓ Selected: ' + input.files[0].name;
+            if (input.files && input.files.length > 0) {
+                if (input.files.length === 1) {
+                    nameDisplay.textContent = '✓ Selected: ' + input.files[0].name;
+                } else if (input.files.length > 4) {
+                    nameDisplay.textContent = '⚠️ Maximum 4 files allowed. Please select fewer files.';
+                    nameDisplay.style.color = '#c33';
+                } else {
+                    nameDisplay.textContent = '✓ Selected: ' + input.files.length + ' files';
+                    nameDisplay.style.color = '#667eea';
+                }
             } else {
                 nameDisplay.textContent = '';
             }

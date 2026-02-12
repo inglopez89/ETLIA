@@ -27,37 +27,45 @@ def upload_files(request):
 
 
 def file_upload_interface(request):
-    """View for uploading Excel and TXT files with file preview"""
+    """View for uploading Excel, CSV and TXT files with file preview"""
     error_message = None
+    success_count = 0
     
     if request.method == 'POST':
-        uploaded_file = request.FILES.get('file')
+        uploaded_files = request.FILES.getlist('file')
         
-        if uploaded_file:
-            # Get file information
-            file_name = uploaded_file.name
-            file_extension = os.path.splitext(file_name)[1].lower()
-            
-            # Validate file type - only accept Excel and TXT files
-            allowed_extensions = ['.xlsx', '.xls', '.txt']
-            
-            if file_extension not in allowed_extensions:
-                error_message = f"Invalid file type. Only Excel (.xlsx, .xls) and Text (.txt) files are allowed."
+        if uploaded_files:
+            # Check maximum file limit
+            if len(uploaded_files) > 4:
+                error_message = "Maximum 4 files can be uploaded at once."
             else:
-                # Save file to model
-                file_obj = UploadedFile(
-                    file=uploaded_file,
-                    file_name=file_name,
-                    file_type=file_extension
-                )
-                file_obj.save()
+                # Validate file type - only accept Excel, CSV and TXT files
+                allowed_extensions = ['.xlsx', '.xls', '.csv', '.txt']
                 
-                return redirect('file_upload_interface')
+                for uploaded_file in uploaded_files:
+                    file_name = uploaded_file.name
+                    file_extension = os.path.splitext(file_name)[1].lower()
+                    
+                    if file_extension not in allowed_extensions:
+                        error_message = f"Invalid file type '{file_extension}'. Only Excel (.xlsx, .xls), CSV (.csv) and Text (.txt) files are allowed."
+                        break
+                    else:
+                        # Save file to model
+                        file_obj = UploadedFile(
+                            file=uploaded_file,
+                            file_name=file_name,
+                            file_type=file_extension
+                        )
+                        file_obj.save()
+                        success_count += 1
+                
+                if success_count > 0 and not error_message:
+                    return redirect('file_upload_interface')
     
     # Get all uploaded files
-    uploaded_files = UploadedFile.objects.all()
+    uploaded_files_list = UploadedFile.objects.all()
     
     return render(request, 'file_upload_interface.html', {
-        'uploaded_files': uploaded_files,
+        'uploaded_files': uploaded_files_list,
         'error_message': error_message
     })
