@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Subir archivos</title>
+</head>
+<body>
+    <h1>Subir archivos de datos</h1>
+
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div>
+            <label>Archivo 1 (CSV):</label>
+            <input type="file" name="file1" accept=".csv" required>
+        </div>
+        <div>
+            <label>Archivo 2 (CSV):</label>
+            <input type="file" name="file2" accept=".csv" required>
+        </div>
+        <button type="submit">Cargar</button>
+    </form>
+
+    {% if file1_columns and file2_columns %}
+        <h2>Columnas detectadas</h2>
+
+        <h3>{{ file1_name }}</h3>
+        <ul>
+            {% for col in file1_columns %}
+                <li>{{ col }}</li>
+            {% endfor %}
+        </ul>
+
+        <h3>{{ file2_name }}</h3>
+        <ul>
+            {% for col in file2_columns %}
+                <li>{{ col }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+</body>
+</html>
