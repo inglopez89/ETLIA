@@ -87,11 +87,8 @@
     </div>
 
     <script>
-        let selectedFiles = [];
-
         function handleFileSelect(event) {
             const files = Array.from(event.target.files);
-            selectedFiles = files;
             
             const infoDiv = document.getElementById('selectedFilesInfo');
             const chatInput = document.getElementById('chatInput');
@@ -109,7 +106,7 @@
                     infoDiv.style.color = '#4a5568';
                     chatInput.value = `${files.length} file(s) ready to upload`;
                     
-                    // Auto-submit the form
+                    // Brief delay to show selection feedback before auto-submitting
                     setTimeout(() => {
                         document.getElementById('uploadForm').submit();
                     }, 500);
@@ -139,19 +136,32 @@
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
+                    // Remove the card from DOM
                     card.remove();
-                    // Reload page to update count
-                    location.reload();
+                    
+                    // Update file count
+                    const filesGrid = document.querySelector('.files-grid');
+                    const heading = document.querySelector('.files-section h2');
+                    const remainingFiles = filesGrid ? filesGrid.children.length : 0;
+                    
+                    if (heading) {
+                        heading.textContent = `Uploaded Files (${remainingFiles})`;
+                    }
+                    
+                    // Show "no files" message if all files deleted
+                    if (remainingFiles === 0 && filesGrid) {
+                        filesGrid.parentElement.innerHTML = '<div class="no-files">No files uploaded yet. Click the + button above to upload your first file!</div>';
+                    }
                 } else {
                     card.style.opacity = '1';
                     card.style.pointerEvents = 'auto';
-                    alert('Error deleting file');
+                    alert('Failed to delete file. Please refresh the page and try again.');
                 }
             })
             .catch(error => {
                 card.style.opacity = '1';
                 card.style.pointerEvents = 'auto';
-                alert('Error deleting file');
+                alert('Network error while deleting file. Please check your connection and try again.');
             });
         }
 
