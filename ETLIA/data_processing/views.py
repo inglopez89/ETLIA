@@ -29,7 +29,6 @@ def upload_files(request):
 def file_upload_interface(request):
     """View for uploading Excel, CSV and TXT files with file preview"""
     error_message = None
-    success_count = 0
     
     if request.method == 'POST':
         uploaded_files = request.FILES.getlist('file')
@@ -57,9 +56,8 @@ def file_upload_interface(request):
                             file_type=file_extension
                         )
                         file_obj.save()
-                        success_count += 1
                 
-                if success_count > 0 and not error_message:
+                if not error_message:
                     return redirect('file_upload_interface')
     
     # Get all uploaded files

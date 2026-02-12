@@ -274,6 +274,7 @@
             if (input.files && input.files.length > 0) {
                 if (input.files.length === 1) {
                     nameDisplay.textContent = '✓ Selected: ' + input.files[0].name;
+                    nameDisplay.style.color = '#667eea';
                 } else if (input.files.length > 4) {
                     nameDisplay.textContent = '⚠️ Maximum 4 files allowed. Please select fewer files.';
                     nameDisplay.style.color = '#c33';
