@@ -1,6 +1,7 @@
 import pandas as pd
 import os
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
+from django.http import JsonResponse
 from django.core.files.storage import default_storage
 from .models import UploadedFile
 
@@ -27,7 +28,7 @@ def upload_files(request):
 
 
 def file_upload_interface(request):
-    """View for uploading Excel, CSV and TXT files with file preview"""
+    """View for uploading Excel, CSV and TXT files with chat-like interface"""
     error_message = None
     
     if request.method == 'POST':
@@ -67,3 +68,16 @@ def file_upload_interface(request):
         'uploaded_files': uploaded_files_list,
         'error_message': error_message
     })
+
+
+def delete_file(request, file_id):
+    """Delete an uploaded file"""
+    if request.method == 'POST':
+        file_obj = get_object_or_404(UploadedFile, id=file_id)
+        # Delete the file from storage
+        if file_obj.file:
+            file_obj.file.delete()
+        # Delete the database record
+        file_obj.delete()
+        return JsonResponse({'success': True})
+    return JsonResponse({'success': False}, status=400)
