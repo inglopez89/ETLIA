@@ -42,7 +42,7 @@
                            class="chat-input" 
                            id="chatInput"
                            placeholder="Type a message or click + to upload files..." 
-                           readonly>
+                           onkeypress="handleChatInput(event)">
                 </div>
                 <div id="selectedFilesInfo" class="selected-files-info" style="display: none;"></div>
             </form>
@@ -163,6 +163,38 @@
                 card.style.pointerEvents = 'auto';
                 alert('Network error while deleting file. Please check your connection and try again.');
             });
+        }
+
+        function handleChatInput(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                const chatInput = document.getElementById('chatInput');
+                const message = chatInput.value.trim();
+                
+                if (message) {
+                    // Add user message to chat
+                    const chatMessages = document.getElementById('chatMessages');
+                    const messageDiv = document.createElement('div');
+                    messageDiv.className = 'chat-message user';
+                    messageDiv.textContent = message;
+                    chatMessages.appendChild(messageDiv);
+                    
+                    // Clear input
+                    chatInput.value = '';
+                    
+                    // Scroll to bottom
+                    chatMessages.scrollTop = chatMessages.scrollHeight;
+                    
+                    // Optional: Add a system response
+                    setTimeout(() => {
+                        const systemDiv = document.createElement('div');
+                        systemDiv.className = 'chat-message system';
+                        systemDiv.textContent = 'Message received. You can continue typing or upload files using the + button.';
+                        chatMessages.appendChild(systemDiv);
+                        chatMessages.scrollTop = chatMessages.scrollHeight;
+                    }, 500);
+                }
+            }
         }
 
         function getCookie(name) {
