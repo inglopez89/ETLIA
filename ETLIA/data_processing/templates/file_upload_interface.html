@@ -4,206 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>File Upload Interface</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        h1 {
-            color: white;
-            text-align: center;
-            margin-bottom: 30px;
-            font-size: 2.5em;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-        }
-
-        .upload-section {
-            background: white;
-            border-radius: 15px;
-            padding: 30px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            margin-bottom: 30px;
-        }
-
-        .upload-section h2 {
-            color: #667eea;
-            margin-bottom: 20px;
-            font-size: 1.5em;
-        }
-
-        .file-input-wrapper {
-            position: relative;
-            display: inline-block;
-            width: 100%;
-            margin-bottom: 20px;
-        }
-
-        .file-input-wrapper input[type="file"] {
-            position: absolute;
-            left: -9999px;
-        }
-
-        .file-input-label {
-            display: block;
-            padding: 20px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            text-align: center;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-size: 1.1em;
-            font-weight: 500;
-        }
-
-        .file-input-label:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
-        }
-
-        .file-input-label i {
-            margin-right: 10px;
-        }
-
-        .upload-btn {
-            width: 100%;
-            padding: 15px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            border-radius: 10px;
-            font-size: 1.1em;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .upload-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
-        }
-
-        .files-section {
-            background: white;
-            border-radius: 15px;
-            padding: 30px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-        }
-
-        .files-section h2 {
-            color: #667eea;
-            margin-bottom: 20px;
-            font-size: 1.5em;
-        }
-
-        .files-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 20px;
-        }
-
-        .file-card {
-            background: #f8f9fa;
-            border-radius: 10px;
-            padding: 15px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            transition: all 0.3s ease;
-            overflow: hidden;
-        }
-
-        .file-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
-        }
-
-        .file-preview {
-            width: 100%;
-            height: 200px;
-            background: #e9ecef;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 15px;
-            overflow: hidden;
-        }
-
-        .file-preview img {
-            max-width: 100%;
-            max-height: 100%;
-            object-fit: contain;
-        }
-
-        .file-preview .file-icon {
-            font-size: 4em;
-            color: #667eea;
-        }
-
-        .file-info {
-            text-align: center;
-        }
-
-        .file-name {
-            font-weight: 600;
-            color: #333;
-            margin-bottom: 5px;
-            word-wrap: break-word;
-            font-size: 0.9em;
-        }
-
-        .file-date {
-            color: #6c757d;
-            font-size: 0.85em;
-        }
-
-        .file-type {
-            display: inline-block;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 3px 10px;
-            border-radius: 5px;
-            font-size: 0.75em;
-            margin-top: 5px;
-        }
-
-        .no-files {
-            text-align: center;
-            color: #6c757d;
-            padding: 40px;
-            font-size: 1.1em;
-        }
-
-        .selected-file-name {
-            margin-top: 10px;
-            color: #667eea;
-            font-size: 0.9em;
-            text-align: center;
-        }
-
-        .error-message {
-            background: #fee;
-            border: 2px solid #f66;
-            border-radius: 8px;
-            padding: 15px;
-            margin-bottom: 20px;
-            color: #c33;
-            font-weight: 500;
-        }
-    </style>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'data_processing/css/file_upload.css' %}">
 </head>
 <body>
     <div class="container">
@@ -242,11 +44,11 @@
                                 {% if file.is_image %}
                                     <img src="{{ file.file.url }}" alt="{{ file.file_name }}">
                                 {% elif file.file_type == '.xlsx' or file.file_type == '.xls' %}
-                                    <div class="file-icon" style="color: #217346;">📊</div>
+                                    <div class="file-icon">📊</div>
                                 {% elif file.file_type == '.csv' %}
-                                    <div class="file-icon" style="color: #0d8c3a;">📋</div>
+                                    <div class="file-icon">📋</div>
                                 {% elif file.file_type == '.txt' %}
-                                    <div class="file-icon" style="color: #666;">📝</div>
+                                    <div class="file-icon">📝</div>
                                 {% else %}
                                     <div class="file-icon">📄</div>
                                 {% endif %}
@@ -274,13 +76,13 @@
             if (input.files && input.files.length > 0) {
                 if (input.files.length === 1) {
                     nameDisplay.textContent = '✓ Selected: ' + input.files[0].name;
-                    nameDisplay.style.color = '#667eea';
+                    nameDisplay.style.color = '#4a5568';
                 } else if (input.files.length > 4) {
                     nameDisplay.textContent = '⚠️ Maximum 4 files allowed. Please select fewer files.';
-                    nameDisplay.style.color = '#c33';
+                    nameDisplay.style.color = '#c53030';
                 } else {
                     nameDisplay.textContent = '✓ Selected: ' + input.files.length + ' files';
-                    nameDisplay.style.color = '#667eea';
+                    nameDisplay.style.color = '#4a5568';
                 }
             } else {
                 nameDisplay.textContent = '';
