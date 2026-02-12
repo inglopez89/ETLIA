@@ -12,6 +12,7 @@ class UploadedFile(models.Model):
         return self.file_name
     
     def is_image(self):
+        """Check if file is an image - kept for future extensibility"""
         image_extensions = ['.jpg', '.jpeg', '.png', '.gif', '.bmp', '.svg', '.webp']
         return any(self.file_name.lower().endswith(ext) for ext in image_extensions)
     

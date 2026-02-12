@@ -27,7 +27,7 @@ def upload_files(request):
 
 
 def file_upload_interface(request):
-    """View for uploading files with image preview"""
+    """View for uploading Excel and TXT files with file preview"""
     error_message = None
     
     if request.method == 'POST':
