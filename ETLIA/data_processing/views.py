@@ -1,5 +1,9 @@
 import pandas as pd
-from django.shortcuts import render
+import os
+from django.shortcuts import render, redirect, get_object_or_404
+from django.http import JsonResponse
+from django.core.files.storage import default_storage
+from .models import UploadedFile
 
 # Create your views here.
 
@@ -21,3 +25,59 @@ def upload_files(request):
             context['error'] = "Please upload both files."
             
     return render(request, 'upload.html', context)
+
+
+def file_upload_interface(request):
+    """View for uploading Excel, CSV and TXT files with chat-like interface"""
+    error_message = None
+    
+    if request.method == 'POST':
+        uploaded_files = request.FILES.getlist('file')
+        
+        if uploaded_files:
+            # Check maximum file limit
+            if len(uploaded_files) > 4:
+                error_message = "Maximum 4 files can be uploaded at once."
+            else:
+                # Validate file type - only accept Excel, CSV and TXT files
+                allowed_extensions = ['.xlsx', '.xls', '.csv', '.txt']
+                
+                for uploaded_file in uploaded_files:
+                    file_name = uploaded_file.name
+                    file_extension = os.path.splitext(file_name)[1].lower()
+                    
+                    if file_extension not in allowed_extensions:
+                        error_message = f"Invalid file type '{file_extension}'. Only Excel (.xlsx, .xls), CSV (.csv) and Text (.txt) files are allowed."
+                        break
+                    else:
+                        # Save file to model
+                        file_obj = UploadedFile(
+                            file=uploaded_file,
+                            file_name=file_name,
+                            file_type=file_extension
+                        )
+                        file_obj.save()
+                
+                if not error_message:
+                    return redirect('file_upload_interface')
+    
+    # Get all uploaded files
+    uploaded_files_list = UploadedFile.objects.all()
+    
+    return render(request, 'file_upload_interface.html', {
+        'uploaded_files': uploaded_files_list,
+        'error_message': error_message
+    })
+
+
+def delete_file(request, file_id):
+    """Delete an uploaded file"""
+    if request.method == 'POST':
+        file_obj = get_object_or_404(UploadedFile, id=file_id)
+        # Delete the file from storage
+        if file_obj.file:
+            file_obj.file.delete()
+        # Delete the database record
+        file_obj.delete()
+        return JsonResponse({'success': True})
+    return JsonResponse({'success': False}, status=400)
