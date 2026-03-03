@@ -1,5 +1,5 @@
 
-def build_prompt_1(user_text, file1_cols, file2_cols):
+def build_prompt_1(file1_cols, file2_cols):
     prompt = f"""
       Eres un asistente que ayuda a personas no técnicas a trabajar con datos de forma segura y comprensible.
 
@@ -15,9 +15,6 @@ def build_prompt_1(user_text, file1_cols, file2_cols):
       Archivo 2:
       - Columnas: {", ".join(file2_cols)}
 
-      Solicitud del usuario:
-      "{user_text}"
-
       Devuelve exactamente lo siguiente:
 
       1. Intención del usuario (explicada en lenguaje simple)
@@ -27,3 +24,20 @@ def build_prompt_1(user_text, file1_cols, file2_cols):
       5. Dudas o cosas que deberías confirmar antes de continuar
       """
     return prompt
+
+def build_prompt_2(intent, function_list):
+    prompt = f"""
+      Eres un asistente que ayuda a seleccionar qué función Python ejecutar
+      para transformar datos.
+
+      Funciones disponibles:
+      {function_list}
+
+      Basado en la intención del usuario:
+      "{intent}"
+
+      Devuelve SOLO el nombre exacto de la función a ejecutar.
+      No expliques nada más.
+      """
+    return prompt
+    

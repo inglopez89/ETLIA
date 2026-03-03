@@ -24,3 +24,6 @@ env_project/
 # OS
 .DS_Store
 Thumbs.db
+
+# Dotenv
+.env 
