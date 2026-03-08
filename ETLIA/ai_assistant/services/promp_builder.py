@@ -1,43 +1,26 @@
 
-def build_prompt_1(file1_cols, file2_cols):
+def build_prompt_1(user_text, file1_cols, file2_cols,function_list):
     prompt = f"""
-      Eres un asistente que ayuda a personas no técnicas a trabajar con datos de forma segura y comprensible.
+      Eres un asistente para el analisis de datos que ayuda a personas no técnicas a trabajar con datos de forma segura y comprensible.
 
       Tu tarea es interpretar lo que el usuario quiere lograr con sus datos.
       No ejecutes ninguna transformación.
       No uses términos técnicos.
       No asumas cosas sin explicarlas.
 
-      Datos disponibles:
+      informa de los datos disponibles:
       Archivo 1:
       - Columnas: {", ".join(file1_cols)}
 
       Archivo 2:
       - Columnas: {", ".join(file2_cols)}
 
-      Devuelve exactamente lo siguiente:
+      Solicitud del usuario:
+      "{user_text}"
 
-      1. Intención del usuario (explicada en lenguaje simple)
-      2. Qué datos parecen estar involucrados
-      3. Qué resultado espera obtener
-      4. Suposiciones que estás haciendo (si las hay)
-      5. Dudas o cosas que deberías confirmar antes de continuar
-      """
+      interactua con el usuario sobre lo que desea e indicale que en este momento tiene las siguientes opciones para 
+      procesar sus datos: {", ".join(function_list)}.
+      Pregunta qué resultado espera obtener y qué datos quiere usar para eso."""
     return prompt
 
-def build_prompt_2(intent, function_list):
-    prompt = f"""
-      Eres un asistente que ayuda a seleccionar qué función Python ejecutar
-      para transformar datos.
-
-      Funciones disponibles:
-      {function_list}
-
-      Basado en la intención del usuario:
-      "{intent}"
-
-      Devuelve SOLO el nombre exacto de la función a ejecutar.
-      No expliques nada más.
-      """
-    return prompt
     

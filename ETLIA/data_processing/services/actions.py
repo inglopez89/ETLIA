@@ -4,7 +4,6 @@ class DataProcessingActions:
     """
     A class to perform various data processing actions such as merging dataframes.
     """
-    @staticmethod
     def merge_data(df_1, df_2, **params):
         """
         Merges two dataframes based on specified columns and merge type.
@@ -26,7 +25,7 @@ class DataProcessingActions:
             how=params.get("how", "inner"),
         )
         return merged_df
-    @staticmethod
+
     def filter_data(df, filter_conditions):
         """
         Filters a dataframe based on specified conditions.
